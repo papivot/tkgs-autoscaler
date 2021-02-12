@@ -1,0 +1,37 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: autoscaler-rb
+  labels:
+    app: autoscaler
+    name: autoscaler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: autoscaler-cr
+subjects:
+- kind: ServiceAccount
+  name: autoscaler-sa 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: autoscaler-cr
+  labels:
+    app: autoscaler
+    name: autoscaler
+rules:
+  - apiGroups:
+    - '*'
+    resources:
+    - '*'
+    verbs: ["get", "list", "watch"]
+  - nonReddsourceURLs:
+    - '*'
+    verbs: ["get", "list", "watch"]
+  - apiGroups: 
+    - "run.tanzu.vmware.com"
+    resources: 
+    - "tanzukubernetesclusters"
+    verbs: ["get", "list", "watch", "patch"]
