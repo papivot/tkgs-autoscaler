@@ -47,7 +47,7 @@ spec:
           value: "3"
         - name: MIN_NODE_COUNT
           value: "1"          
-        image: whoami6443/autoscaler:0.0.2
+        image: whoami6443/autoscaler:0.0.4
         imagePullPolicy: Always
         name: autoscaler
         resources:
