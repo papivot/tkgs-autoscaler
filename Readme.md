@@ -1,3 +1,10 @@
+# TKGs Autoscaler
+
+The is a simple cluster autoscaler implementation for TKGs - vSphere 7 with Tanzu. Currently only Scale out is implemented and Scale-in is being implemented. 
+
+
+
+
 ```
 Info: Script sleeping for 1 minutes...
 Info: Cluster workload-vsphere-tkg1 failed to schedule POD(s) due to CPU pressure. Scaling required.
