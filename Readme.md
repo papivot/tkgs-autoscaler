@@ -1,6 +1,13 @@
 # TKGs Autoscaler
 
-The is a simple cluster autoscaler implementation for TKGs - vSphere 7 with Tanzu. Currently only Scale out is implemented and Scale-in is being implemented. 
+This repository is a Bash based modest cluster autoscaler implementation for TKGs - vSphere 7 with Tanzu. Currently, only scale-out is implemented, and scale-in is being implemented. 
+
+The script `autoscaler.sh` can be executed from inside a vSphere 7 Supervisor Kubernetes cluster or be run outside of the cluster. 
+
+When running the autoscaler outside the cluster, provide the configuration parameters in the `autoscale.config` file. Make sure that a valid kubeconfig file exists with access to the WCP namespace that contains the TKGs cluster(s).
+
+To deploy and execute from within the Supervisor cluster, build your container image using the Docker file provided in the scripts folder. There is already a prebuilt image that you could leverage that if creating your container image is not an option. 
+
 
 
 
