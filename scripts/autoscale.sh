@@ -173,7 +173,7 @@ do
 			fi
 		
 			# Code for Scale in check goes here
-			if [[ $NUM_WORKER_NODES -gt 1 ]]
+			if [[ ${NUM_WORKER_NODES} -gt ${MIN_NODE_COUNT} ]]
 			then
 				ALLOC_CPU=`echo ${NODE_ALLOCATED_CPU_SUM} | bc`
 				ALLOC_MEM=`echo ${NODE_ALLOCATED_MEM_SUM} | bc`

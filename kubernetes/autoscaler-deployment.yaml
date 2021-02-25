@@ -46,7 +46,11 @@ spec:
         - name: MAX_NODE_COUNT
           value: "3"
         - name: MIN_NODE_COUNT
-          value: "1"          
+          value: "1"
+        - name: MAX_TOTAL_CPU
+          value: "0.6"
+        - name: MAX_TOTAL_CPU
+          value: "0.6"
         image: whoami6443/autoscaler:0.0.4
         imagePullPolicy: Always
         name: autoscaler
