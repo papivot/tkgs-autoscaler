@@ -13,6 +13,40 @@ else
 	fi
 fi
 
+convert_to_bytes()
+{
+	VALUE_IN_Gi=${1%Gi}
+	if [[ ${VALUE_IN_Gi} == ${1} ]]
+	then
+		VALUE_IN_Mi=${1%Mi}
+		if [[ ${VALUE_IN_Mi} == ${1} ]]
+		then
+			VALUE_IN_Ki=${1%Ki}
+			if [[ ${VALUE_IN_Ki} == ${1} ]] 
+			then
+				echo "${1}"|bc
+			else
+				echo "${VALUE_IN_Ki}*1024"|bc
+			fi
+		else
+			echo "${VALUE_IN_Mi}*1024*1024"|bc
+		fi
+	else
+		echo "${VALUE_IN_Gi}*1024*1024*1024"|bc
+	fi
+}
+
+convert_to_millicpu()
+{
+	VALUE_IN_m=${1%m}
+	if [[ ${VALUE_IN_m} == ${1} ]]
+	then
+		echo "${VALUE_IN_m}*1000"|bc
+	else
+		echo "${VALUE_IN_m}"|bc
+	fi
+}
+
 scale_out()
 {
 	CLUSTER_STATUS=$(kubectl get tkc $1 -n $2 -o json|jq -r '.status.phase')
@@ -84,10 +118,35 @@ do
 		then	
 			SCALE_OUT_REQ=0
 			SCALE_IN_REQ=0
+			NODE_MEM_SUM="0"
+			NODE_CPU_SUM="0"
+			NODE_ALLOCATED_MEM_SUM="0"
+			NODE_ALLOCATED_CPU_SUM="0"
 
 			# Generating Workload cluster Kubeconfig
 			kubectl get secrets ${WORKLOAD_CLUSTER}-kubeconfig -n ${NAMESPACE} -o json |jq -r '.data.value'|base64 -d > ${WORKLOAD_CLUSTER}-kubeconfig
+
+			NUM_WORKER_NODES=$(kubectl get nodes --kubeconfig=${WORKLOAD_CLUSTER}-kubeconfig --selector 'node-role.kubernetes.io/master!=' -o json |jq -r '.items'|jq length)
+			for NODE in $(kubectl get nodes --selector 'node-role.kubernetes.io/master!=' -o json| jq -r '.items[].metadata.name')
+			do
+				echo "Info: Gathering CPU and meory allocation stats from ${NODE}"
+				NODE_DETAIL=$(kubectl describe node ${NODE})
+				NODE_MEMORY=`echo ${NODE_DETAIL}|grep Allocatable -A 7 | grep memory|awk '{print $2}'`
+				NODE_CPU=`echo ${NODE_DETAIL} | grep Allocatable -A 7 | grep cpu | awk '{print $2}'`
+				NODE_ALLOCATED_MEMORY=`echo ${NODE_DETAIL} |grep Allocated -A 7 | grep memory | awk '{print $2}'`
+				NODE_ALLOCATED_CPU=`echo ${NODE_DETAIL} | grep Allocated -A 7 | grep cpu | awk '{print $2}'`
+				temp1=`convert_to_bytes ${NODE_MEMORY}`
+				temp2=`convert_to_bytes ${NODE_ALLOCATED_MEMORY}`
+				temp3=`convert_to_millicpu ${NODE_CPU}`
+				temp4=`convert_to_millicpu ${NODE_ALLOCATED_CPU}`
+								
+				NODE_MEM_SUM+="+${temp1}"
+				NODE_ALLOCATED_MEM_SUM+="+${temp2}"
+				NODE_CPU_SUM+="+${temp3}"
+				NODE_ALLOCATED_CPU_SUM+="+${temp4}"
+			done
 			
+			# Code for Scale in check goes here
 			# Check if any pending pods in the cluster.	
 			PENDING_PODS_NS=$(kubectl get pods -A --kubeconfig=${WORKLOAD_CLUSTER}-kubeconfig --field-selector=status.phase==Pending -o json |jq -r '.items[] | .metadata.namespace + ";" + .metadata.name')
 			for ARRAY in ${PENDING_PODS_NS}
@@ -107,17 +166,28 @@ do
 					break
 				fi
 			done
-			# NUM_WORKER_NODES=$(kubectl get nodes --kubeconfig=${WORKLOAD_CLUSTER}-kubeconfig --selector 'node-role.kubernetes.io/master!=' -o json |jq -r '.items'|jq length)			 
 			if [ ${SCALE_OUT_REQ} -eq 1 ]
 			then
 				scale_out ${WORKLOAD_CLUSTER} ${NAMESPACE} ${MAX_NODE_COUNT}
+				break
 			fi
 		
 			# Code for Scale in check goes here
-			### WIP
+			if [[ $NUM_WORKER_NODES -gt 1 ]]
+			then
+				ALLOC_CPU=`echo ${NODE_ALLOCATED_CPU_SUM} | bc`
+				ALLOC_MEM=`echo ${NODE_ALLOCATED_MEM_SUM} | bc`
+				TARGET_CPU=`echo "scale=0; (${NODE_CPU_SUM})*${MAX_TOTAL_CPU}*(${NUM_WORKER_NODES}-1)/${NUM_WORKER_NODES}" |bc`
+				TARGET_MEM=`echo "scale=0; (${NODE_MEM_SUM})*${MAX_TOTAL_MEM}*(${NUM_WORKER_NODES}-1)/${NUM_WORKER_NODES}" |bc`
+				if [[ ${ALLOC_CPU} -lt ${TARGET_CPU} ]] && [[ ${ALLOC_MEM} -lt ${TARGET_MEM} ]]
+   				then
+					SCALE_IN_REQ=1
+				fi
+			fi
 			if [ ${SCALE_IN_REQ} -eq 1 ]
 			then
 	 			scale_in ${WORKLOAD_CLUSTER} ${NAMESPACE} ${MIN_NODE_COUNT}
+				break
 			fi
 		fi
 	done
