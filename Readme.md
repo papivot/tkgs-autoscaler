@@ -25,9 +25,9 @@ Note: some specific `roles` and `rolebindings` are required for Autoscaler to ru
 * MAX_NODE_COUNT and MIN_NODE_COUNT - The allowed maximum and minimum worker node count that the Autoscaler will scale up or down.
 * MAX_TOTAL_CPU and MAX_TOTAL_MEM - A decimal value (0 to 1) expressed as a percent. The total max allocation that is allowed across all the worker nodes during scale-in calculation. 
 
-*Scale-up* -  If the TKG cluster cannot schedule any pending pods due to CPU or memory pressure, the process scales the worker node count by 1. Additonal scale-up is prevented, until the new node joins the cluster. This process is repeated until all pending pods have been successfully deployed or the cluster has reached the MAX_NODE_COUNT.
+*Scale-up* -  If the TKG cluster cannot schedule any pending pods due to CPU or memory pressure, the process scales the worker node count by 1. Additonal scale-up is prevented, until the new node joins the cluster. This process is repeated until all pending pods have been successfully deployed or the cluster has reached the `MAX_NODE_COUNT`.
 
-*Scale-down* - If there are no pending pods in the cluster, attemop to scale down the cluster. Check if by removing one worker node, the sum of allocated resources (CPU and/or memory)  is less than the sum off thr available resources * MAX_TOTAL_CPU or MAX_TOTAL_MEM. If so, decrease the node count by one. Scale-in is repeated untill the above condition is met.
+*Scale-down* - If there are no pending pods in the cluster, attemop to scale down the cluster. Check if by removing one worker node, the sum of allocated resources (CPU and/or memory)  is less than the sum off thr available resources `MAX_TOTAL_CPU` or `MAX_TOTAL_MEM`. If so, decrease the node count by one. Scale-in is repeated untill the above condition is met.
 
 ### Sample Output
 The outputs of the autoscaler may be similer to this - 
