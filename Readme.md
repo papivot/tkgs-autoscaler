@@ -27,7 +27,7 @@ Note: some specific `roles` and `rolebindings` are required for Autoscaler to ru
 
 *Scale-up* -  If the TKG cluster **cannot schedule any pending pods due to CPU or memory pressure**, the process scales the worker node count by 1. Additonal scale-up is prevented, until the new node joins the cluster. This process is repeated until all pending pods have been successfully deployed or the cluster has reached the `MAX_NODE_COUNT`.
 
-*Scale-down* - If there are **no pending pods** in the cluster, attempt to scale down the cluster. Check if by removing one worker node, the sum of allocated resources (CPU and/or memory)  is less than the sum off thr available resources `MAX_TOTAL_CPU` or `MAX_TOTAL_MEM`. If so, decrease the node count by one. Scale-in is repeated untill the above condition is met or the `MIN_NODE_COUNT` is reached.
+*Scale-down* - If there are **no pending pods** in the cluster, attempt to scale down the cluster. Check if by removing one worker node, the sum of allocated resources (CPU and/or memory)  is less than the sum off the available resources `MAX_TOTAL_CPU` or `MAX_TOTAL_MEM`. If so, decrease the node count by one. Scale-in is repeated untill the above condition is met or the `MIN_NODE_COUNT` is reached.
 
 ### Sample Output
 The outputs of the autoscaler may be similer to this - 
