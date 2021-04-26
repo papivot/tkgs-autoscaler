@@ -1,4 +1,5 @@
 # TKGs Autoscaler
+---
 
 Disclaimer: This repository is a Bash-based modest cluster Autoscaler implementation for Tanzu Kubernetes Grid Services running on vSphere with Tanzu.  This does not replace any official solution provided by VMware.
 
@@ -13,6 +14,16 @@ To deploy and execute from within the Supervisor cluster, build your container i
 
 Note: some specific `roles` and `rolebindings` are required for Autoscaler to run. To configure these, you need to deploy the `authz.yaml` file from within the control plane node of the Supervisor cluster. This additional requirement is due to the access limitations that have been enforced in WCP. 
 
+---
+### Autoscaling Logic 
+(Use this project only if the logic meets your requirements)
+* SCRIPT_FREQ_MIN - determines in minutes how often the reconciliation loop is executed. Smaller values may lead to more aggressive scale-up and scale-down.
+* NAMESPACE - The Supervisor Cluster namespace where the Autoscaler will run and autoscale the Workload clusters.
+* EXCLUDE_CLUSTER - List of clusters you would like to exclude from the Autoscaling consideration within the namespace. 
+* MAX_NODE_COUNT and MIN_NODE_COUNT - The allowed maximum and minimum worker node count that the Autoscaler will scale up or down.
+* MAX_TOTAL_CPU and MAX_TOTAL_MEM - 
+
+*Scale-up* -  
 
 The outputs of the autoscaler is similer to this - 
 
