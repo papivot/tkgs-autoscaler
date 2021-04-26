@@ -19,7 +19,7 @@ Note: some specific `roles` and `rolebindings` are required for Autoscaler to ru
 ### Autoscaling Logic 
 (use this project only if the logic meets your requirements)
 
-SCRIPT_FREQ_MIN - determines in minutes how often the reconciliation loop is executed. Smaller values may lead to more aggressive scale-up and scale-down.
+* SCRIPT_FREQ_MIN - determines in minutes how often the reconciliation loop is executed. Smaller values may lead to more aggressive scale-up and scale-down.
 * NAMESPACE - The Supervisor Cluster namespace where the Autoscaler will run and autoscale the Workload clusters.
 * EXCLUDE_CLUSTER - List of clusters you would like to exclude from the Autoscaling consideration within the namespace. 
 * MAX_NODE_COUNT and MIN_NODE_COUNT - The allowed maximum and minimum worker node count that the Autoscaler will scale up or down.
