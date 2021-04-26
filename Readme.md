@@ -1,8 +1,9 @@
 # TKGs Autoscaler
----
 
+---
 Disclaimer: This repository is a Bash-based modest cluster Autoscaler implementation for Tanzu Kubernetes Grid Services running on vSphere with Tanzu.  This does not replace any official solution provided by VMware.
 
+---
 ## How to execute the Autoscaler
 The script `autoscaler.sh` can be executed from inside a vSphere Supervisor Cluster or run outside of the cluster. 
 
@@ -25,8 +26,10 @@ Note: some specific `roles` and `rolebindings` are required for Autoscaler to ru
 
 *Scale-up* -  
 
-The outputs of the autoscaler is similer to this - 
 
+### Sample Output 
+
+The outputs of the autoscaler may be similer to this - 
 
 ```
 Info: Script sleeping for 1 minutes...
