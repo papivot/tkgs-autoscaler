@@ -1,7 +1,7 @@
 # TKGs Autoscaler
 
 ---
-**Disclaimer**: This repository is a Bash-based modest cluster Autoscaler implementation for Tanzu Kubernetes Grid Services running on vSphere with Tanzu.  This process does not replace any official solution provided by VMware.
+**Disclaimer**: This repository is a Bash-based modest cluster Autoscaler implementation for Tanzu Kubernetes Grid Services running on vSphere with Tanzu.  This process does not replace any official solution provided by the vendor.
 ---
 
 ## How to execute the Autoscaler
