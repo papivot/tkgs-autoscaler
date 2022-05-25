@@ -27,7 +27,7 @@ rules:
     resources:
     - '*'
     verbs: ["get", "list", "watch"]
-  - nonReddsourceURLs:
+  - nonResourcesURLs:
     - '*'
     verbs: ["get", "list", "watch"]
   - apiGroups: 
